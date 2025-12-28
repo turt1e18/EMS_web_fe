@@ -7,6 +7,7 @@ export type UserResponse = {
   user: {
     ok: boolean;
     email?: string;
+    level?: number;
     message: string;
   };
 };

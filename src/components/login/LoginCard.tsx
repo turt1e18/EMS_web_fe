@@ -34,7 +34,11 @@ export default function LoginCard() {
     try {
       const data = await loginAction({email, password});
       toast.success(`로그인 성공: ${data.user.email}`);
-      router.push("/usermainpage");
+      if (data.user.level === 3 || data.user.level === 4) {
+        router.push("/usermainpage"); // 3 혹은 4면 유저 메인 페이지로 이동
+      } else if (data.user.level === 1 || data.user.level === 2) {
+        router.push("/adminmainpage"); // 1 혹은 2면 관리자 메인 페이지로 이동
+      }
     } catch {
       toast.error("로그인 실패");
     } finally {
