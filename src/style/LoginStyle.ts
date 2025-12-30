@@ -12,8 +12,8 @@ export const PageCenter = styled.div`
   justify-content: center;
   gap: 16px;
 
-  color: ${({ theme }) => theme.colors.text};
-  background: ${({ theme }) => theme.colors.background};
+  color: ${({theme}) => theme.colors.text};
+  background: ${({theme}) => theme.colors.background};
 `;
 
 export const Card = styled.section`
@@ -21,10 +21,10 @@ export const Card = styled.section`
   max-width: calc(100vw - 48px);
   padding: 30px 31px;
 
-  background: ${({ theme }) => theme.colors.card};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.large};
-  box-shadow: ${({ theme }) => theme.shadow};
+  background: ${({theme}) => theme.colors.card};
+  border: 1px solid ${({theme}) => theme.colors.border};
+  border-radius: ${({theme}) => theme.radii.large};
+  box-shadow: ${({theme}) => theme.shadow};
 `;
 
 export const Title = styled.h2`
@@ -52,7 +52,7 @@ export const LinkA = styled.a`
   font-size: 0.93rem;
   font-weight: 600;
   text-decoration: none;
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({theme}) => theme.colors.primary};
 
   &:hover {
     filter: brightness(1.3);

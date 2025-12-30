@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useMemo, useState, useCallback, useEffect, useRef} from "react";
+import React, {useState, useCallback, useEffect, useRef} from "react";
 import toast from "react-hot-toast";
 import {rentItemAction, getItemsAction} from "@/api/rent/rent.Server";
 import {
@@ -51,41 +51,45 @@ export default function RentalContent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<RentableItem | null>(null);
   const [rentQuantity, setRentQuantity] = useState(1);
+  const quantityInputRef = useRef<HTMLInputElement>(null);
 
   /**
    * 물품 리스트 조회시 최종적으로 호출되는 함수
    * 서버함수인 getItemsAction을 검색어와 카테고리로 조회하도록 호출
    * visibleCount를 offset으로 사용
    */
-  const fetchItems = useCallback(async (keyword: string, category: string, offset: number) => {
-    if (isLoadingRef.current) return; // 이미 로딩 중이면 불러오지않음
+  const fetchItems = useCallback(
+      async (keyword: string, category: string, offset: number) => {
+        if (isLoadingRef.current) return; // 이미 로딩 중이면 불러오지않음
 
-    isLoadingRef.current = true;
-    setLoading(true);
-    try {
-      // 10 + 1개 요청 (다음 페이지 존재 여부 확인용)
-      const limit = 11;
-      const result = await getItemsAction(keyword, category, offset, limit);
+        isLoadingRef.current = true;
+        setLoading(true);
+        try {
+          // 10 + 1개 요청 (다음 페이지 존재 여부 확인용)
+          const limit = 11;
+          const result = await getItemsAction(keyword, category, offset, limit);
 
-      // 반환값이 11개면 목록이 더 있다는 뜻 -> hasMore = true
-      setHasMore(result.length === limit);
+          // 반환값이 11개면 목록이 더 있다는 뜻 -> hasMore = true
+          setHasMore(result.length === limit);
 
-      // 반환값에 상관없이 10개까지만 보여줌
-      const newItems = result.slice(0, 10);
+          // 반환값에 상관없이 10개까지만 보여줌
+          const newItems = result.slice(0, 10);
 
-      // offset이 0이면 새로고침이므로 전체를 교체하고, 그렇지 않으면 이전 목록에 추가
-      if (offset === 0) {
-        setItems(newItems);
-      } else {
-        setItems((prev) => [...prev, ...newItems]);
-      }
-    } catch (error) {
-      console.error("물품 조회 실패:", error);
-    } finally {
-      setLoading(false);
-      isLoadingRef.current = false;
-    }
-  }, []);
+          // offset이 0이면 새로고침이므로 전체를 교체하고, 그렇지 않으면 이전 목록에 추가
+          if (offset === 0) {
+            setItems(newItems);
+          } else {
+            setItems((prev) => [...prev, ...newItems]);
+          }
+        } catch (error) {
+          console.error("물품 조회 실패:", error);
+        } finally {
+          setLoading(false);
+          isLoadingRef.current = false;
+        }
+      },
+      []
+  );
 
   /**
    * 초기 로딩 시 물품 목록 조회
@@ -147,7 +151,7 @@ export default function RentalContent() {
   /**
    * 최종 대여 확정
    */
-  const handleConfirmRent = async () => {
+  const handleConfirmRent = useCallback(async () => {
     if (!selectedItem) return;
 
     try {
@@ -159,7 +163,7 @@ export default function RentalContent() {
     } catch {
       toast.error("대여 실패");
     }
-  };
+  }, [selectedItem, rentQuantity, searchInput, selectedCategory, fetchItems]);
 
   /**
    * 검색 실행
@@ -200,6 +204,34 @@ export default function RentalContent() {
     },
     isLoading: loading
   });
+
+  /**
+   * 모달이 열렸을 때 수량 입력 박스에 포커스
+   */
+  useEffect(() => {
+    if (isModalOpen && quantityInputRef.current) {
+      quantityInputRef.current.focus();
+      quantityInputRef.current.select();
+    }
+  }, [isModalOpen]);
+
+  /**
+   * 모달이 열렸을 때 Enter로 대여 실행 / Esc로 모달 닫기
+   */
+  useEffect(() => {
+    if (!isModalOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        handleConfirmRent();
+      } else if (e.key === "Escape") {
+        handleCloseModal();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isModalOpen, handleConfirmRent]);
 
   return (
       <Card>
@@ -263,7 +295,6 @@ export default function RentalContent() {
             </thead>
             <tbody>
             {items.map((item) => {
-              // 재고가 0이거나 상태가 false면 대여 불가
               const isRentable = item.isRentable && item.currentQuantity > 0;
 
               return (
@@ -320,6 +351,7 @@ export default function RentalContent() {
                   <ModalInputWrapper>
                     <ModalInputLabel>대여 수량:</ModalInputLabel>
                     <ModalInput
+                        ref={quantityInputRef}
                         type="number"
                         min={1}
                         max={Math.min(

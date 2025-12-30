@@ -36,13 +36,16 @@ export default function RentalList({
    *  dueDate를 문자열로 변환하는 함수
    **/
   const formatDueDate = (dueDate: number): string => {
-    if (dueDate < 0) {
+    if (rentalStatus === "overdue") {
       return `${Math.abs(dueDate)}일 연체`;
-    } else if (dueDate === 0) {
-      return "오늘 만기";
-    } else {
+    }
+    if (rentalStatus === "dueSoon") {
+      if (dueDate === 0) {
+        return "오늘 만기";
+      }
       return `${dueDate}일 후 만기`;
     }
+    return `${dueDate}일 후 만기`;
   };
 
   return (

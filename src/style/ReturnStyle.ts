@@ -82,11 +82,6 @@ export const SearchIconButton = styled.button`
     color: #007aff;
   }
 
-  &:disabled {
-    cursor: not-allowed;
-    color: #cbd5e1;
-  }
-
   svg {
     width: 18px;
     height: 18px;
@@ -127,7 +122,6 @@ export const CategorySelect = styled.select`
 export const TableContainer = styled.div`
   width: 100%;
   overflow-x: auto;
-  /* 스크롤바 스타일링 */
 
   &::-webkit-scrollbar {
     height: 8px;
@@ -160,9 +154,8 @@ export const TableHeadCell = styled.th<{ $width?: string }>`
   width: ${({$width}) => $width || "auto"};
 `;
 
-export const TableHeadCellName = styled(TableHeadCell)<{ $width?: string }>`
+export const TableHeadCellName = styled(TableHeadCell)`
   text-align: left;
-  width: ${({$width}) => $width || "auto"};
 `;
 
 export const TableBodyRow = styled.tr`
@@ -191,7 +184,9 @@ export const TableBodyCellRight = styled(TableBodyCell)`
   text-align: right;
 `;
 
-export const StatusPill = styled.span<{ $status: boolean }>`
+export const StatusPill = styled.span<{
+  $status: "OVERDUE" | "DUE_SOON" | "NORMAL";
+}>`
   display: inline-flex;
   align-items: center;
   padding: 4px 10px;
@@ -199,58 +194,46 @@ export const StatusPill = styled.span<{ $status: boolean }>`
   font-size: 12px;
   font-weight: 600;
 
-  ${({$status}) =>
-      $status
-          ? css`
-            background: #dcfce7;
-            color: #15803d;
-          `
-          : css`
-            background: #f8f38a;
-            color: #5c5c40;
-          `};
+  ${({$status}) => {
+    switch ($status) {
+      case "OVERDUE":
+        return css`
+          background: #fee2e2;
+          color: #ef4444;
+        `;
+      case "DUE_SOON":
+        return css`
+          background: #fef9c3;
+          color: #854d0e;
+        `;
+      case "NORMAL":
+      default:
+        return css`
+          background: #f1f5f9;
+          color: #64748b;
+        `;
+    }
+  }};
 `;
 
-export const RentButton = styled.button<{ disabled?: boolean }>`
+export const ReturnButton = styled.button`
   border-radius: 999px;
   padding: 8px 20px;
   font-size: 14px;
   font-weight: 600;
   border: none;
-  cursor: ${({disabled}) => (disabled ? "not-allowed" : "pointer")};
-  background: ${({disabled}) => (disabled ? "#e5e7eb" : "#007aff")};
-  color: ${({disabled}) => (disabled ? "#9ca3af" : "#ffffff")};
+  cursor: pointer;
+  background: #007aff;
+  color: #ffffff;
   transition: all 0.2s ease;
   white-space: nowrap;
 
   &:hover {
-    background: ${({disabled}) => (disabled ? "#e5e7eb" : "#0369a1")};
+    background: #0369a1;
   }
 
   &:active {
-    transform: ${({disabled}) => (disabled ? "none" : "translateY(0)")};
-  }
-`;
-
-export const LoadMoreWrapper = styled.div`
-  padding-top: 1px;
-`;
-
-export const LoadMoreButton = styled.button`
-  width: 100%;
-  padding: 12px 24px;
-  border-radius: 12px;
-  border: solid 1px rgb(236, 236, 243);
-  background: rgb(241, 245, 249);
-  color: rgb(51, 65, 85);
-  font-size: 0.875rem;
-  font-weight: 800;
-  cursor: pointer;
-  transition: background-color 0.15s ease,
-  color 0.15s ease;
-
-  &:hover {
-    background: rgb(226, 232, 240);
+    transform: translateY(0);
   }
 `;
 
@@ -282,7 +265,8 @@ export const ModalContainer = styled.div`
   border-radius: 16px;
   width: 90%;
   max-width: 400px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+  0 2px 4px -1px rgba(0, 0, 0, 0.06);
   animation: slideUp 0.3s ease-out;
 
   @keyframes slideUp {
@@ -311,40 +295,15 @@ export const ModalContent = styled.div`
   line-height: 1.5;
 `;
 
-export const ModalInputWrapper = styled.div`
-  margin-top: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-export const ModalInput = styled.input`
-  width: 80px;
-  padding: 8px 12px;
-  background-color: #4a4947ff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 1rem;
-  text-align: center;
-  outline: none;
-
-  &:focus {
-    border-color: #3b82f6;
-  }
-`;
-
-export const ModalInputLabel = styled.span`
-  font-size: 0.875rem;
-  color: #64748b;
-`;
-
 export const ModalFooter = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 12px;
 `;
 
-export const ModalButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
+export const ModalButton = styled.button<{
+  $variant?: "primary" | "secondary";
+}>`
   padding: 8px 16px;
   border-radius: 8px;
   font-weight: 600;
@@ -354,7 +313,7 @@ export const ModalButton = styled.button<{ $variant?: 'primary' | 'secondary' }>
   border: none;
 
   ${({$variant}) =>
-      $variant === 'secondary'
+      $variant === "secondary"
           ? css`
             background: #f1f5f9;
             color: #64748b;

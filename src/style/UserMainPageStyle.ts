@@ -29,11 +29,21 @@ export const MainContainer = styled.main`
   gap: 20px;
 `;
 
-export const PageTitle = styled.h2`
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: ${({theme}) => theme.colors.text};
-  margin-bottom: 24px;
+export const EmptyMessage = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  color: rgb(100, 116, 139);
+  font-size: 1rem;
+  text-align: center;
+
+  .material-icons-outlined {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: rgb(203, 213, 225);
+  }
 `;
 
 export const LoadMoreButton = styled.button`
@@ -53,30 +63,6 @@ export const LoadMoreButton = styled.button`
     background: rgb(226, 232, 240);
   }
 `;
-
-// 모든 대여 아이템 (dueDate: 남은 일수)
-export const allItems = [
-  {name: "MX Master 3", dueDate: -2},
-  {name: "Webcam C300", dueDate: -5},
-  {name: "MacBook Pro", dueDate: 15},
-  {name: "iPad Air", dueDate: 100000},
-  {name: "MacBook Pro", dueDate: 15},
-  {name: "iPad Air", dueDate: 100000},
-  {name: "Magic Keyboard", dueDate: 3},
-  {name: "Monitor 27", dueDate: 20},
-  {name: "MacBook Pro", dueDate: 15},
-  {name: "iPad Air", dueDate: 100000},
-  {name: "MacBook Pro", dueDate: 15},
-  {name: "iPad Air", dueDate: 100000},
-  {name: "Magic Keyboard", dueDate: 3},
-  {name: "Monitor 27", dueDate: 20},
-  {name: "MacBook Pro", dueDate: 15},
-  {name: "iPad Air", dueDate: 100000},
-  {name: "MacBook Pro", dueDate: 15},
-  {name: "iPad Air", dueDate: 100000},
-  {name: "Magic Keyboard", dueDate: 3},
-  {name: "Monitor 27", dueDate: 20}
-];
 
 /**
  * Header.tsx -------------------------------------------------------------------------------------
